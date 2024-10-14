@@ -1,4 +1,4 @@
-# CONTRACT ADVISOR RAG: TOWARDS BUILDING A HIGH-PRECISION LEGAL EXPERT LLM APP
+# CONTRACT ADVISOR RAG: TOWARDS BUILDING A HIGH-PRECISION LEGAL EXPERT Using LLM APP
 
 **Navigating the complexities of legal contracts can be a daunting task, even for experienced professionals.  ContractAdvisorRAG is an AI-powered legal assistance system designed to empower users with quick and accurate answers to their questions about contracts.**  This project harnesses the power of Langchain to build a sophisticated Question & Answer system with Retrieval Augmented Generation (RAG). 
 
@@ -30,8 +30,6 @@ The complexity of legal contracts often poses a barrier to understanding for ind
 * **Multi-Query Retrieval:**  The retrieval performance was significantly enhanced by 32% through the implementation of the multi-query retriever from Langchain.  This allows the system to explore multiple facets of a query and retrieve a broader range of relevant information.
 * **Context Reranking:**  Further improvements were achieved through context reranking using Cohere and ContextualCompressionRetriever, resulting in a 52% increase in retrieval accuracy. This ensures that the most relevant context is presented to the language model for generating the most precise answers. 
 
-![Optimization Techniques Comparison](screenshots/comparison_improvement_approches.png)
-
 **Figure 1:**  Comparison of optimization techniques used to enhance the retrieval component of ContractAdvisorRAG. The chart shows the significant improvement in performance achieved through multi-query retrieval and context reranking.
 
 * **Full-Stack Implementation:**  ContractAdvisorRAG features a user-friendly React frontend for seamless interaction and a robust FAST API backend for efficient data management and processing.
@@ -41,12 +39,6 @@ The complexity of legal contracts often poses a barrier to understanding for ind
 * **RAGAS Framework:** The performance of the RAG pipeline was rigorously evaluated using the RAGAS (Retrieval-Augmented Generation Assessment Suite) framework. 
 * **Key Metrics:**  Focus was placed on key metrics such as context precision, context recall, faithfulness, and answer relevancy to ensure the system's reliability and effectiveness.
 
-## Project Demo Video:
-
-[![ContractAdvisorRAG Video](https://img.youtube.com/vi/KjBWNNN3thA/maxresdefault.jpg)](https://www.youtube.com/watch?v=KjBWNNN3thA)
-
-The video showcases the basic functionality of the ContractAdvisorRAG system.
-
 ## Future Directions:
 
 * **Expanding Legal Data:**  Integrate a wider range of legal documents and resources to enhance the system's knowledge base.
@@ -55,7 +47,7 @@ The video showcases the basic functionality of the ContractAdvisorRAG system.
 
 ## Contributing:
 
-We encourage contributions to this project. Feel free to fork the repository, propose improvements, and share your feedback.
+I encourage contributions to this project. Feel free to fork the repository, propose improvements, and share your feedback.
 
 ## License:
 
@@ -63,6 +55,6 @@ This project is licensed under the MIT License.
 
 ## Contributors
 
-- [Elias Assamnew](https://github.com/gelifatsy) 
+- [Getachew Abbebe](https://github.com/GetachewAbebe) 
 
 **This is a journey towards building a high-precision legal expert LLM app. Your contributions are welcome!**
