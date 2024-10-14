@@ -55,6 +55,6 @@ This project is licensed under the MIT License.
 
 ## Contributors
 
-- [Getachew Abbebe](https://github.com/GetachewAbebe) 
+- [Getachew Abebe](https://github.com/GetachewAbebe) 
 
 **This is a journey towards building a high-precision legal expert LLM app. Your contributions are welcome!**
