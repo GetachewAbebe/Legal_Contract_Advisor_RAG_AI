@@ -1,4 +1,4 @@
-ragenv/*
+my_env/*
 .env
 
 # Byte-compiled / optimized / DLL files
