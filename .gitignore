@@ -1,4 +1,4 @@
-my_env/*
+env/*
 .env
 .vscode
 # Byte-compiled / optimized / DLL files
