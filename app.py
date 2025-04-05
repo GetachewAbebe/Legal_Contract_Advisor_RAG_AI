@@ -1,10 +1,10 @@
 import streamlit as st
 import json
 from config import CONTRACT_FILE_PATH, EVALUATION_FILE_PATH, OPENAI_API_KEY
-from utils.document import read_docx, chunk_text
-from utils.embeddings import get_embeddings_model
+from utils.document_loader import read_docx, chunk_text
+from utils.embeddings_models import get_embeddings_model
 from utils.vector_store import initialize_pinecone, upsert_chunks
-from utils.answer import query_chunks, generate_answer
+from utils.answer_generation import query_chunks, generate_answer
 
 st.title("Contract Advisor RAG")
 

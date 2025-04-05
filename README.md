@@ -26,7 +26,7 @@ The intricate nature of legal contracts often creates barriers to understanding,
 
 ## Approach
 
-- **LangChain Foundation**: Built on LangChain for seamless integration of retrieval and generation components.
+- **LangChain Foundation**: Built on LangChain for sesamless integration of retrieval and generation components.
 - **RAG Pipeline**: Uses OpenAI for generation, Pinecone for vector storage, and ElevenLabs for text-to-speech, tailored for CPU-only environments.
 - **User-Driven Data**: Supports dynamic contract uploads via Streamlit, with temporary chunk storage in `data/processed/` for session efficiency.
 - **Evaluation Without Ground Truth**: Implements a custom evaluation module (`src/utils/evaluation.py`) to compute faithfulness (answer-context alignment) and relevance (query-answer similarity) dynamically.
