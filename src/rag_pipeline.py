@@ -5,8 +5,9 @@ from src.components.generator import generate_answer
 
 def process_contract_and_store(text: str, file_name: str):
     chunks = chunk_text(text)
-    upsert_chunks(chunks, file_name)
+    # Ensure metadata is a list of dictionaries matching the number of chunks
+    metadatas = [{"source": file_name} for _ in chunks]
+    upsert_chunks(chunks, metadatas)
 
 def query_contract(question: str):
-    chunks = retrieve_chunks(question)
-    return generate_answer(question, chunks)
+    return generate_answer(question)

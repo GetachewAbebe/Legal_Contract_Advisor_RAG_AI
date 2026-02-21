@@ -2,7 +2,7 @@
 
 import os
 from dotenv import load_dotenv
-from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 
 load_dotenv()
 

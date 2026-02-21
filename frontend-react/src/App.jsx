@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { Toaster } from "react-hot-toast";
+import { Trash2, PlusCircle, History, BriefcaseBusiness } from "lucide-react";
 import FileUpload from "./components/FileUpload";
 import ChatBox from "./components/ChatBox";
 
@@ -10,25 +12,56 @@ function App() {
   }, [darkMode]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-white transition-all">
-      <div className="max-w-3xl mx-auto px-6 py-10">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-blue-700 dark:text-blue-300">
-            🧠 Contract Q&A
-          </h1>
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className="text-sm bg-gray-200 dark:bg-gray-800 px-3 py-1 rounded"
-          >
-            {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
-          </button>
+    <div className="app-container">
+      <Toaster position="top-right" reverseOrder={false} />
+
+      <div className="bg-blobs">
+        <div className="blob blob-1"></div>
+        <div className="blob blob-2"></div>
+        <div className="blob blob-3"></div>
+      </div>
+
+      <aside className="sidebar">
+        <div className="sidebar-header">
+          <History size={20} className="mr-2" />
+          <span>Sessions</span>
+        </div>
+        <button className="new-chat-btn" onClick={() => window.location.reload()}>
+          <PlusCircle size={18} />
+          <span>New Chat</span>
+        </button>
+        <div className="history-list">
+          <p className="history-item active">Current Contract</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 space-y-6">
-          <FileUpload onUploadComplete={() => console.log("Uploaded")} />
-          <ChatBox />
+        <div className="history-list">
+          <p className="history-item active">Current Contract</p>
         </div>
-      </div>
+
+        <div className="sidebar-upload">
+          <FileUpload onUploadComplete={() => console.log("Uploaded")} />
+        </div>
+      </aside>
+
+      <main className="main-content">
+        <header className="header">
+          <div className="header-left">
+            <div className="logo-icon">
+              <BriefcaseBusiness size={32} className="text-cyan-400" />
+            </div>
+            <div>
+              <h1 className="title">Contract Advisor AI</h1>
+              <p className="subtitle">
+                Multi-Agent Legal Intelligence Platform
+              </p>
+            </div>
+          </div>
+        </header>
+
+        <section className="glass-card chat-area">
+          <ChatBox />
+        </section>
+      </main>
     </div>
   );
 }

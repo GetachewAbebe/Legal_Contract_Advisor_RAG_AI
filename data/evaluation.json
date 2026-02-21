@@ -1,0 +1,14 @@
+[
+  {
+    "question": "What is the governing law of this contract?",
+    "ground_truth": "The contract is governed by the laws of the State of California."
+  },
+  {
+    "question": "What is the term of the agreement?",
+    "ground_truth": "The term of the agreement is one year from the effective date."
+  },
+  {
+    "question": "Who are the parties involved in this contract?",
+    "ground_truth": "The parties are the Company and the Contractor."
+  }
+]

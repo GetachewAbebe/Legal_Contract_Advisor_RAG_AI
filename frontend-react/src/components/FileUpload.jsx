@@ -1,50 +1,101 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useDropzone } from "react-dropzone";
+import toast from "react-hot-toast";
+import { Upload, FileCheck, AlertCircle, Loader2 } from "lucide-react";
 import { uploadContract } from "../services/api";
 
 export default function FileUpload({ onUploadComplete }) {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const onDrop = useCallback((acceptedFiles) => {
+    if (acceptedFiles.length > 0) {
+      setFile(acceptedFiles[0]);
+      setSuccess(false);
+      setProgress(0);
+    }
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'application/pdf': ['.pdf'],
+      'application/msword': ['.doc'],
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
+    },
+    multiple: false,
+    disabled: uploading
+  });
 
   const handleUpload = async () => {
-    if (!file) return alert("📄 Please select a contract file first.");
+    if (!file) return;
     setUploading(true);
+    setSuccess(false);
+    setProgress(10);
+
+    const interval = setInterval(() => {
+      setProgress((prev) => (prev < 90 ? prev + 10 : prev));
+    }, 500);
 
     try {
       await uploadContract(file);
-      alert("✅ Contract uploaded successfully!");
+      clearInterval(interval);
+      setProgress(100);
+      setSuccess(true);
+      toast.success("Contract analyzed and indexed!");
       onUploadComplete?.();
-      setFile(null); // reset input
+
+      setTimeout(() => {
+        setSuccess(false);
+        setFile(null);
+        setProgress(0);
+      }, 3000);
     } catch (error) {
-      console.error("Upload error:", error);
-      alert("❌ Failed to upload the contract.");
+      clearInterval(interval);
+      setProgress(0);
+      toast.error("Failed to analyze the contract.");
     } finally {
       setUploading(false);
     }
   };
 
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-      <input
-        type="file"
-        accept=".pdf,.doc,.docx"
-        onChange={(e) => setFile(e.target.files[0])}
-        className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
-      />
-      <button
-        onClick={handleUpload}
-        disabled={!file || uploading}
-        className={`px-4 py-2 rounded-xl transition text-white ${
-          uploading
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-green-600 hover:bg-green-700"
-        }`}
-      >
-        {uploading ? "Uploading..." : "Upload"}
-      </button>
-      {file && (
-        <p className="text-xs text-gray-500 mt-1 truncate w-full sm:w-auto">
-          Selected: {file.name}
-        </p>
+    <div
+      {...getRootProps()}
+      className={`upload-zone ${isDragActive ? 'drag-active' : ''} ${success ? 'upload-success' : ''}`}
+    >
+      <input {...getInputProps()} />
+
+      <div className="upload-icon">
+        {uploading ? <Loader2 className="animate-spin text-blue-400" size={32} /> :
+          success ? <FileCheck className="text-emerald-400" size={32} /> :
+            <Upload className={isDragActive ? "text-cyan-400" : "text-slate-400"} size={32} />}
+      </div>
+
+      <p className="upload-text">
+        {uploading ? "Neural Indexing..." :
+          success ? "Legally Indexed & Ready!" :
+            file ? file.name :
+              isDragActive ? "Drop here..." : "Welcome to the Contract Advisor. Upload a document and ask a question below."}
+      </p>
+
+      <div className={`progress-container ${uploading || success ? 'active' : ''}`}>
+        <div className="progress-bar" style={{ width: `${progress}%` }}></div>
+      </div>
+
+      {file && !success && !uploading && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleUpload();
+          }}
+          className="send-button mt-4"
+          style={{ marginTop: '1.5rem', width: '100%', padding: '12px' }}
+        >
+          Start Legal Analysis
+        </button>
       )}
     </div>
   );

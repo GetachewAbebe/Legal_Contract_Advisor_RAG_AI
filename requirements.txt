@@ -1,14 +1,19 @@
-# Core Backend
 fastapi
-uvicorn
+uvicorn[standard]
+websockets
+python-multipart
 
 # LLM + RAG Stack
 langchain
+langchain-community
+langchain-openai
+langchain-pinecone
 openai
 pinecone-client
 
 # Embeddings & NLP
 sentence-transformers
+langchain-huggingface
 tiktoken
 
 # Text Chunking & Parsing
@@ -17,11 +22,10 @@ python-docx
 PyMuPDF
 
 # Frontend
-streamlit
+# (Removed old streamlit frontend)
 
 # Evaluation
 nltk
-ragas==0.0.10  # optional, if using RAGAS metrics
 
 # Utilities
 python-dotenv
@@ -33,3 +37,4 @@ pytest
 # Formatting & Linting
 black
 flake8
+langgraph

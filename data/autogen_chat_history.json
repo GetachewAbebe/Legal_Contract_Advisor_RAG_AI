@@ -1,0 +1,64 @@
+[
+    {
+        "content": "Hello, could you please show me the termination clauses for this contract",
+        "role": "user",
+        "name": "User"
+    },
+    {
+        "tool_calls": [
+            {
+                "id": "call_rnu6XICtqR9JfsY7FoPCj1cM",
+                "function": {
+                    "arguments": "{\"question\":\"Please provide the termination clauses for this contract\"}",
+                    "name": "query_contract"
+                },
+                "type": "function"
+            }
+        ],
+        "content": "None",
+        "role": "assistant",
+        "name": "ContractExpertTool"
+    },
+    {
+        "content": "The termination clause for this contract states that either party may terminate the Agreement at any time, for any reason, with or without cause, upon fourteen (14) days' prior written notice. Additionally, the Company may terminate the Agreement immediately and without prior notice if the Advisor breaches any of the terms outlined in the contract.",
+        "tool_responses": [
+            {
+                "tool_call_id": "call_rnu6XICtqR9JfsY7FoPCj1cM",
+                "role": "tool",
+                "content": "The termination clause for this contract states that either party may terminate the Agreement at any time, for any reason, with or without cause, upon fourteen (14) days' prior written notice. Additionally, the Company may terminate the Agreement immediately and without prior notice if the Advisor breaches any of the terms outlined in the contract."
+            }
+        ],
+        "role": "tool",
+        "name": "User"
+    },
+    {
+        "content": "Based on the extracted information, the termination clause in this contract allows either party to terminate the Agreement at any time with or without cause upon fourteen (14) days' prior written notice. The Company also has the right to terminate the Agreement immediately and without prior notice if the Advisor breaches any of the contract terms.",
+        "role": "user",
+        "name": "LegalWorker"
+    },
+    {
+        "content": "The summary provided aligns with the termination clauses extracted from the contract. This summary accurately reflects the termination rights of both parties. APPROVED.",
+        "role": "user",
+        "name": "LegalCritic"
+    },
+    {
+        "content": "",
+        "role": "user",
+        "name": "User"
+    },
+    {
+        "content": "",
+        "role": "user",
+        "name": "User"
+    },
+    {
+        "content": "",
+        "role": "user",
+        "name": "User"
+    },
+    {
+        "content": "",
+        "role": "user",
+        "name": "User"
+    }
+]

@@ -1,7 +1,7 @@
 import os
-from langchain_community.vectorstores import Pinecone as LangchainPinecone
+from langchain_pinecone import PineconeVectorStore as LangchainPinecone
 from langchain_openai import OpenAIEmbeddings
-import pinecone
+from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,13 +12,10 @@ env = os.getenv("PINECONE_ENVIRONMENT")  # Format: "us-east-1-aws"
 index_name = os.getenv("PINECONE_INDEX_NAME")
 
 # Initialize Pinecone client
-pinecone.init(api_key=api_key, environment=env)
+pc = Pinecone(api_key=api_key)
 
-# Check and fetch your Pinecone index object
-if index_name not in pinecone.list_indexes():
-    raise ValueError(f"Index '{index_name}' does not exist in your Pinecone project. Please check your dashboard.")
-
-index = pinecone.Index(index_name)
+# Initialize Pinecone index directly (bypassing control plane checks to avoid 500 errors)
+index = pc.Index(index_name)
 
 # Set up embeddings
 embedding_model = OpenAIEmbeddings(
