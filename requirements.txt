@@ -14,6 +14,7 @@ pinecone-client
 # Embeddings & NLP
 sentence-transformers
 langchain-huggingface
+langchain-text-splitters
 tiktoken
 
 # Text Chunking & Parsing
