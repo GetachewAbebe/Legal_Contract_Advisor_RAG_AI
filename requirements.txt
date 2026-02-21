@@ -4,12 +4,13 @@ websockets
 python-multipart
 
 # LLM + RAG Stack
-langchain
-langchain-community
-langchain-openai
-langchain-pinecone
+langchain~=0.2.0
+langchain-community~=0.2.0
+langchain-openai~=0.1.0
+langchain-pinecone~=0.1.0
 openai
 pinecone-client
+pydantic-settings
 
 # Embeddings & NLP
 sentence-transformers
