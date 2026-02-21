@@ -1,4 +1,3 @@
-# Removed unused import
 from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
@@ -12,65 +11,68 @@ from langchain_pinecone import PineconeVectorStore
 from src.components.embedder import get_embedding_model
 from src.config import settings
 
-embedding_model = get_embedding_model()
+# Global Lazy Instances
+_rag_chain = None
 
-from src.components.retriever import index  # assuming your Pinecone index instance is here
+def get_rag_chain():
+    global _rag_chain
+    if _rag_chain is None:
+        embedding_model = get_embedding_model()
+        
+        # 🧠 Chat model
+        llm = ChatOpenAI(
+            model_name=settings.OPENAI_MODEL_NAME,
+            openai_api_key=settings.OPENAI_API_KEY,
+            temperature=0
+        )
 
-# 🧠 Chat model
-llm = ChatOpenAI(
-    model_name=settings.OPENAI_MODEL_NAME,
-    openai_api_key=settings.OPENAI_API_KEY,
-    temperature=0
-)
+        # 🧠 Chat memory
+        memory = ConversationBufferMemory(
+            memory_key="chat_history",
+            return_messages=True,
+            output_key="answer"
+        )
 
-# 🧠 Chat memory (optional, helps with context)
-memory = ConversationBufferMemory(
-    memory_key="chat_history",
-    return_messages=True,
-    output_key="answer"  # Needed when return_source_documents=True
-)
+        # 🧲 Retriever from Pinecone vector DB
+        vectorstore = PineconeVectorStore.from_existing_index(
+            index_name=settings.PINECONE_INDEX_NAME,
+            embedding=embedding_model,
+        )
+        base_retriever = vectorstore.as_retriever(search_kwargs={"k": 20})
 
-# 🧲 Retriever from Pinecone vector DB
-vectorstore = PineconeVectorStore.from_existing_index(
-    index_name=settings.PINECONE_INDEX_NAME,               # your Pinecone index name
-    embedding=embedding_model,
-)
-base_retriever = vectorstore.as_retriever(search_kwargs={"k": 20})  # Fetch more chunks for the reranker
+        # 🧠 Multi-Query Retriever
+        advanced_retriever = MultiQueryRetriever.from_llm(
+            retriever=base_retriever, llm=llm
+        )
 
-# 🧠 Enhancement 2: Multi-Query Retriever to improve recall
-advanced_retriever = MultiQueryRetriever.from_llm(
-    retriever=base_retriever, llm=llm
-)
+        # 🚀 Neural Reranking (CrossEncoder)
+        cross_encoder = HuggingFaceCrossEncoder(model_name="BAAI/bge-reranker-base")
+        compressor = CrossEncoderReranker(model=cross_encoder, top_n=4)
 
-# 🚀 Phase 1 Modernization: Neural Reranking (CrossEncoder)
-# Note: Using a lightweight BGE reranker for fast CPU inference
-cross_encoder = HuggingFaceCrossEncoder(model_name="BAAI/bge-reranker-base")
-compressor = CrossEncoderReranker(model=cross_encoder, top_n=4)
+        compression_retriever = ContextualCompressionRetriever(
+            base_compressor=compressor,
+            base_retriever=advanced_retriever
+        )
 
-compression_retriever = ContextualCompressionRetriever(
-    base_compressor=compressor,
-    base_retriever=advanced_retriever
-)
+        # 🧠 Prompt template
+        template = """
+        You are a legal assistant AI helping users understand contracts.
+        Use the provided context to answer the user's question.
+        If the answer isn't in the context, say you don't know.
 
-# 🧠 Prompt template (optional but encouraged)
-template = """
-You are a legal assistant AI helping users understand contracts.
-Use the provided context to answer the user's question.
-If the answer isn't in the context, say you don't know.
+        Context: {context}
+        Question: {question}
+        """
+        QA_CHAIN_PROMPT = PromptTemplate.from_template(template)
 
-Context: {context}
-Question: {question}
-"""
-
-QA_CHAIN_PROMPT = PromptTemplate.from_template(template)
-
-# 🔗 Build the RAG chain
-rag_chain = ConversationalRetrievalChain.from_llm(
-    llm=llm,
-    retriever=compression_retriever, # Phase 1: Using Neural Reranker on top of MultiQuery
-    memory=memory, # Enhancement 1: Global session memory is active
-    combine_docs_chain_kwargs={"prompt": QA_CHAIN_PROMPT}
-)
+        # 🔗 Build the RAG chain
+        _rag_chain = ConversationalRetrievalChain.from_llm(
+            llm=llm,
+            retriever=compression_retriever,
+            memory=memory,
+            combine_docs_chain_kwargs={"prompt": QA_CHAIN_PROMPT}
+        )
+    return _rag_chain
 
 
 def generate_answer(query: str) -> str:
@@ -78,7 +80,8 @@ def generate_answer(query: str) -> str:
     Given a user query, generate a contract-aware answer using RAG with Conversational Memory.
     """
     try:
-        result = rag_chain.invoke({"question": query})
+        chain = get_rag_chain()
+        result = chain.invoke({"question": query})
         return result["answer"]
     except Exception as e:
         print(f"❌ Error generating answer: {e}")

@@ -3,25 +3,36 @@ from langchain_openai import OpenAIEmbeddings
 from pinecone import Pinecone
 from src.config import settings
 
-# Initialize Pinecone client
-pc = Pinecone(api_key=settings.PINECONE_API_KEY)
+_index = None
+_embedding_model = None
+_retriever = None
 
-# Initialize Pinecone index directly (bypassing control plane checks to avoid 500 errors)
-index = pc.Index(settings.PINECONE_INDEX_NAME)
+def get_index():
+    global _index
+    if _index is None:
+        pc = Pinecone(api_key=settings.PINECONE_API_KEY)
+        _index = pc.Index(settings.PINECONE_INDEX_NAME)
+    return _index
 
-# Set up embeddings
-embedding_model = OpenAIEmbeddings(
-    model=settings.EMBEDDING_MODEL_NAME,
-    openai_api_key=settings.OPENAI_API_KEY
-)
+def get_embedding_model():
+    global _embedding_model
+    if _embedding_model is None:
+        _embedding_model = OpenAIEmbeddings(
+            model=settings.EMBEDDING_MODEL_NAME,
+            openai_api_key=settings.OPENAI_API_KEY
+        )
+    return _embedding_model
 
-# Initialize retriever from existing index
-retriever = LangchainPinecone(index, embedding_model, "text").as_retriever()
+def get_retriever():
+    global _retriever
+    if _retriever is None:
+        _retriever = LangchainPinecone(get_index(), get_embedding_model(), "text").as_retriever()
+    return _retriever
 
 # Exported functions
 def upsert_chunks(texts, metadatas):
-    vectorstore = LangchainPinecone(index, embedding_model, "text")
+    vectorstore = LangchainPinecone(get_index(), get_embedding_model(), "text")
     vectorstore.add_texts(texts=texts, metadatas=metadatas)
 
 def retrieve_chunks(query):
-    return retriever.get_relevant_documents(query)
+    return get_retriever().get_relevant_documents(query)
