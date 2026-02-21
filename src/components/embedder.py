@@ -1,13 +1,10 @@
 # src/components/embedder.py
 
-import os
-from dotenv import load_dotenv
 from langchain_openai import OpenAIEmbeddings
-
-load_dotenv()
+from src.config import settings
 
 def get_embedding_model():
     return OpenAIEmbeddings(
-        model="text-embedding-3-small",
-        openai_api_key=os.getenv("OPENAI_API_KEY")
+        model=settings.EMBEDDING_MODEL_NAME,
+        openai_api_key=settings.OPENAI_API_KEY
     )

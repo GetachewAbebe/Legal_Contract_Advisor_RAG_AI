@@ -1,4 +1,3 @@
-import os
 # Removed unused import
 from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
@@ -11,19 +10,16 @@ from langchain.retrievers import ContextualCompressionRetriever
 from langchain_pinecone import PineconeVectorStore
 
 from src.components.embedder import get_embedding_model
+from src.config import settings
 
 embedding_model = get_embedding_model()
 
-
 from src.components.retriever import index  # assuming your Pinecone index instance is here
 
-# 🔐 Load API key
-openai_api_key = os.getenv("OPENAI_API_KEY")
-index_name = os.getenv("PINECONE_INDEX_NAME")  # ✅ Read the index name from env
 # 🧠 Chat model
 llm = ChatOpenAI(
-    model_name="gpt-3.5-turbo",
-    openai_api_key=openai_api_key,
+    model_name=settings.OPENAI_MODEL_NAME,
+    openai_api_key=settings.OPENAI_API_KEY,
     temperature=0
 )
 
@@ -36,7 +32,7 @@ memory = ConversationBufferMemory(
 
 # 🧲 Retriever from Pinecone vector DB
 vectorstore = PineconeVectorStore.from_existing_index(
-    index_name=index_name,               # your Pinecone index name
+    index_name=settings.PINECONE_INDEX_NAME,               # your Pinecone index name
     embedding=embedding_model,
 )
 base_retriever = vectorstore.as_retriever(search_kwargs={"k": 20})  # Fetch more chunks for the reranker

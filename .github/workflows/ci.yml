@@ -40,5 +40,6 @@ jobs:
       env:
         OPENAI_API_KEY: "dummy_ci_key"
         PINECONE_API_KEY: "dummy_ci_key"
+        PINECONE_INDEX_NAME: "dummy_ci_index"
       run: |
         pytest -v

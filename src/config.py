@@ -1,5 +1,10 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List
+from dotenv import load_dotenv
+import os
+
+# Populate os.environ for libraries that don't use Pydantic Settings
+load_dotenv()
 
 class Settings(BaseSettings):
     # API Keys

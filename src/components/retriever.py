@@ -1,26 +1,18 @@
-import os
 from langchain_pinecone import PineconeVectorStore as LangchainPinecone
 from langchain_openai import OpenAIEmbeddings
-from pinecone import Pinecone, ServerlessSpec
-from dotenv import load_dotenv
-
-load_dotenv()
-
-# Load environment variables
-api_key = os.getenv("PINECONE_API_KEY")
-env = os.getenv("PINECONE_ENVIRONMENT")  # Format: "us-east-1-aws"
-index_name = os.getenv("PINECONE_INDEX_NAME")
+from pinecone import Pinecone
+from src.config import settings
 
 # Initialize Pinecone client
-pc = Pinecone(api_key=api_key)
+pc = Pinecone(api_key=settings.PINECONE_API_KEY)
 
 # Initialize Pinecone index directly (bypassing control plane checks to avoid 500 errors)
-index = pc.Index(index_name)
+index = pc.Index(settings.PINECONE_INDEX_NAME)
 
 # Set up embeddings
 embedding_model = OpenAIEmbeddings(
-    model="text-embedding-3-small",
-    openai_api_key=os.getenv("OPENAI_API_KEY")
+    model=settings.EMBEDDING_MODEL_NAME,
+    openai_api_key=settings.OPENAI_API_KEY
 )
 
 # Initialize retriever from existing index
